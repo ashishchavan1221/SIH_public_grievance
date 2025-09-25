@@ -21,31 +21,25 @@ const AuthPage = ({ onLogin }) => {
     confirmPassword: "",
   });
   const [errors, setErrors] = useState({});
+  const API_URL = "http://localhost:5000/api/auth";
 
   const validateForm = () => {
     const newErrors = {};
 
-    if (!formData.email) {
-      newErrors.email = "Email is required";
-    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
+    if (!formData.email) newErrors.email = "Email is required";
+    else if (!/\S+@\S+\.\S+/.test(formData.email))
       newErrors.email = "Please enter a valid email";
-    }
 
-    if (!formData.password) {
-      newErrors.password = "Password is required";
-    } else if (formData.password.length < 6) {
+    if (!formData.password) newErrors.password = "Password is required";
+    else if (formData.password.length < 6)
       newErrors.password = "Password must be at least 6 characters";
-    }
 
     if (!isLogin) {
-      if (!formData.name) {
-        newErrors.name = "Name is required";
-      }
-      if (!formData.confirmPassword) {
+      if (!formData.name) newErrors.name = "Name is required";
+      if (!formData.confirmPassword)
         newErrors.confirmPassword = "Please confirm your password";
-      } else if (formData.password !== formData.confirmPassword) {
+      else if (formData.password !== formData.confirmPassword)
         newErrors.confirmPassword = "Passwords do not match";
-      }
     }
 
     setErrors(newErrors);
@@ -54,28 +48,45 @@ const AuthPage = ({ onLogin }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     if (!validateForm()) return;
 
     setIsLoading(true);
 
-    // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 1500));
+    try {
+      const endpoint = isLogin ? "login" : "register";
+      const payload = isLogin
+        ? { email: formData.email, password: formData.password }
+        : {
+            name: formData.name,
+            email: formData.email,
+            password: formData.password,
+          };
 
-    // Mock successful authentication
-    onLogin({
-      email: formData.email,
-      name: formData.name || formData.email.split("@")[0],
-    });
+      const res = await fetch(`${API_URL}/${endpoint}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
 
-    setIsLoading(false);
+      const data = await res.json();
+
+      if (!res.ok) {
+        setErrors({ api: data.message || "Something went wrong" });
+      } else {
+        // Backend should return user info
+        onLogin({ email: data.email, name: data.name });
+      }
+    } catch (err) {
+      setErrors({ api: "Server not reachable. Please try again later.", err });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleInputChange = (field, value) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
-    if (errors[field]) {
-      setErrors((prev) => ({ ...prev, [field]: "" }));
-    }
+    if (errors[field]) setErrors((prev) => ({ ...prev, [field]: "" }));
+    if (errors.api) setErrors((prev) => ({ ...prev, api: "" }));
   };
 
   return (
@@ -95,6 +106,7 @@ const AuthPage = ({ onLogin }) => {
           {/* Toggle Buttons */}
           <div className="flex bg-gray-100 rounded-2xl p-1 mb-8">
             <button
+              type="button"
               onClick={() => setIsLogin(true)}
               className={`flex-1 py-3 px-4 rounded-xl font-medium transition-all duration-300 ${
                 isLogin
@@ -102,10 +114,10 @@ const AuthPage = ({ onLogin }) => {
                   : "text-gray-600 hover:text-gray-800"
               }`}
             >
-              <LogIn className="w-4 h-4 inline mr-2" />
-              Login
+              <LogIn className="w-4 h-4 inline mr-2" /> Login
             </button>
             <button
+              type="button"
               onClick={() => setIsLogin(false)}
               className={`flex-1 py-3 px-4 rounded-xl font-medium transition-all duration-300 ${
                 !isLogin
@@ -113,13 +125,11 @@ const AuthPage = ({ onLogin }) => {
                   : "text-gray-600 hover:text-gray-800"
               }`}
             >
-              <UserPlus className="w-4 h-4 inline mr-2" />
-              Register
+              <UserPlus className="w-4 h-4 inline mr-2" /> Register
             </button>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-6">
-            {/* Name Field (Register only) */}
             {!isLogin && (
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -135,6 +145,7 @@ const AuthPage = ({ onLogin }) => {
                       errors.name ? "border-red-500" : "border-gray-300"
                     }`}
                     placeholder="Enter your full name"
+                    autoComplete="name"
                   />
                 </div>
                 {errors.name && (
@@ -143,7 +154,6 @@ const AuthPage = ({ onLogin }) => {
               </div>
             )}
 
-            {/* Email Field */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Email Address
@@ -158,6 +168,7 @@ const AuthPage = ({ onLogin }) => {
                     errors.email ? "border-red-500" : "border-gray-300"
                   }`}
                   placeholder="Enter your email"
+                  autoComplete="email"
                 />
               </div>
               {errors.email && (
@@ -165,7 +176,6 @@ const AuthPage = ({ onLogin }) => {
               )}
             </div>
 
-            {/* Password Field */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Password
@@ -182,6 +192,7 @@ const AuthPage = ({ onLogin }) => {
                     errors.password ? "border-red-500" : "border-gray-300"
                   }`}
                   placeholder="Enter your password"
+                  autoComplete={isLogin ? "current-password" : "new-password"}
                 />
                 <button
                   type="button"
@@ -200,7 +211,6 @@ const AuthPage = ({ onLogin }) => {
               )}
             </div>
 
-            {/* Confirm Password Field (Register only) */}
             {!isLogin && (
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -220,6 +230,7 @@ const AuthPage = ({ onLogin }) => {
                         : "border-gray-300"
                     }`}
                     placeholder="Confirm your password"
+                    autoComplete="new-password"
                   />
                 </div>
                 {errors.confirmPassword && (
@@ -230,7 +241,10 @@ const AuthPage = ({ onLogin }) => {
               </div>
             )}
 
-            {/* Submit Button */}
+            {errors.api && (
+              <p className="text-red-600 text-sm font-medium">{errors.api}</p>
+            )}
+
             <button
               type="submit"
               disabled={isLoading}
@@ -260,7 +274,6 @@ const AuthPage = ({ onLogin }) => {
             </button>
           </form>
 
-          {/* Additional Options */}
           {isLogin && (
             <div className="text-center mt-6">
               <button className="text-blue-600 text-sm hover:underline">
@@ -269,7 +282,6 @@ const AuthPage = ({ onLogin }) => {
             </div>
           )}
 
-          {/* Terms and Privacy (Register only) */}
           {!isLogin && (
             <div className="mt-6 text-center">
               <p className="text-xs text-gray-500">
