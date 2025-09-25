@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Report Problem with Live Photo</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      background: #f9f9f9;
+    }
+    form {
+      max-width: 500px;
+      padding: 20px;
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    label {
+      font-weight: bold;
+      display: block;
+      margin-top: 10px;
+    }
+    input, textarea, button {
+      width: 100%;
+      padding: 8px;
+      margin-top: 5px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+    button {
+      background: green;
+      color: white;
+      cursor: pointer;
+      font-size: 16px;
+    }
+    button:hover {
+      background: darkgreen;
+    }
+    options{
+        height: 20px;
+        width: 80px;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>Report a Civic Problem</h2>
+  <form id="problemForm" enctype="multipart/form-data">
+    <!-- Username -->
+    <label for="username">Your Name:</label>
+    <input type="text" id="username" name="username" required>
+
+    <div class="selectotion">
+        <label for="problem">Problem Type :</label>
+        <select name="problewm" id="problem" class="options">
+            <option value="select">Select</option>
+            <option value="pothole">Pothole/Damage Roads</option>
+            <option value="road_damage">Drainage Blockage/Waterlogging</option>
+            <option value="street_light">Street Light Issue</option>
+            <option value="traffic_signal">Tree Falling/Over Grown Trees</option>
+            <option value="traffic_signal">Solid waste/Garbage Accumulation</option>
+        </select>
+    </div>
+
+    <!-- Problem Description -->
+    <label for="problem">Problem Description:</label>
+    <textarea id="problem" name="problem" rows="4" required></textarea>
+
+    <!-- Geo Location -->
+    <label for="location">Geo Location:</label>
+    <input type="text" id="location" name="location" readonly required>
+    <button type="button" onclick="getLocation()">Get My Location</button>
+
+    <!-- Live Camera Capture -->
+    <label for="image">Take Photo:</label>
+    <input type="file" id="image" name="image" accept="image/*" capture="environment" required>
+
+    <!-- Submit Button -->
+    <button type="submit">Submit</button>
+  </form>
+
+  <script>
+    function getLocation() {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition((position) => {
+          const lat = position.coords.latitude;
+          const lon = position.coords.longitude;
+          document.getElementById("location").value = lat + ", " + lon;
+        }, () => {
+          alert("Unable to fetch location.");
+        });
+      } else {
+        alert("Geolocation not supported.");
+      }
+    }
+
+    // Handle form submission (example only)
+    document.getElementById("problemForm").addEventListener("submit", function(e) {
+      e.preventDefault(); // Prevent actual submit for demo
+      alert("Form submitted with live photo!");
+      // Use fetch() or AJAX to send form data to your server
+    });
+  </script>
+
+</body>
+</html>
