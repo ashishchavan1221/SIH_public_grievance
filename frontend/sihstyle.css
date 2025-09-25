@@ -1,42 +1,85 @@
-.container{
-    font-family: roboto;
-    height: 100%;
+/* General body and container styles */
+body {
+    font-family: 'Roboto', sans-serif;
+    background-color: hsl(210, 100%, 56%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+}
+
+.container {
+    background-color: white;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: 350px;
+    text-align: center;
+}
+
+/* Styles for both login and registration forms */
+.registerform, .loginform {
+    display: flex;
+    flex-direction: column;
+}
+
+/* Input elements */
+.inputEle {
+    height: 35px;
     width: 100%;
-    background-color: rgb(233, 163, 59);
-    background-size: cover;
-}
-.subbutton{
-    height: 40%;
-    width: 60%;
-}
-.registerform{
-    margin: 10%;
-    height: 450px;
-}
-.inputEle{
-    height: 25px;
-    width: 90%;
-    border-width: 0.2px;
+    padding: 0 10px;
+    border: 1px solid #ccc;
     border-radius: 5px;
-    margin-bottom: 10px;
+    margin-bottom: 15px;
+    box-sizing: border-box; /* Ensures padding and border don't affect width */
 }
-.inputtext{
-    font-family: roboto;
-    font-size: 20px;
-    margin-bottom: 10px;
+
+/* Labels for input fields */
+.inputtext {
+    font-size: 16px;
+    margin-bottom: 5px;
+    text-align: left;
+    display: block;
 }
-.registration{
+
+/* Headings */
+.registration, .login-heading {
     text-align: center;
-    margin-top: 10px;
+    margin-bottom: 20px;
+    color: #333;
 }
-.btn{
-    text-align: center;
-    height: 30px;
-    width: 100px;
+
+/* Submit/Login button */
+.btn {
+    height: 40px;
+    width: 100%;
+    border: none;
     border-radius: 5px;
     background-color: rgb(70, 188, 234);
-    font-size: 20px;
-    font-family: roboto;
-    color: beige;
-    border-width: 1px;
+    font-size: 18px;
+    font-weight: bold;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.btn:hover {
+    background-color: rgb(50, 150, 200);
+}
+
+/* Link style */
+p {
+    margin-top: 20px;
+    color: #666;
+}
+
+a {
+    color: rgb(70, 188, 234);
+    text-decoration: none;
+    font-weight: bold;
+}
+
+a:hover {
+    text-decoration: underline;
 }
