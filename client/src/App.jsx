@@ -9,7 +9,7 @@ import {
   TrendingUp,
   MessageSquare,
 } from "lucide-react";
-// file import
+import AuthPage from "./components/AuthPage";
 import Dashboard from "./components/Dashboard";
 import StageOne from "./components/StageOne";
 import StageTwo from "./components/StageTwo";
@@ -17,6 +17,8 @@ import StageThree from "./components/StageThree";
 import Navigation from "./components/Navigation";
 
 function App() {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [user, setUser] = useState(null);
   const [currentView, setCurrentView] = useState("dashboard");
   const [complaintData, setComplaintData] = useState({
     description: "",
@@ -65,6 +67,17 @@ function App() {
     },
   ]);
 
+  const handleLogin = (userData) => {
+    setUser(userData);
+    setIsAuthenticated(true);
+  };
+
+  const handleLogout = () => {
+    setUser(null);
+    setIsAuthenticated(false);
+    setCurrentView("dashboard");
+  };
+
   const updateComplaintData = (data) => {
     setComplaintData((prev) => ({ ...prev, ...data }));
   };
@@ -85,6 +98,11 @@ function App() {
     });
     setCurrentView("dashboard");
   };
+
+  // Show authentication page if not logged in
+  if (!isAuthenticated) {
+    return <AuthPage onLogin={handleLogin} />;
+  }
 
   const renderCurrentView = () => {
     switch (currentView) {
@@ -121,6 +139,7 @@ function App() {
             complaints={complaints}
             onNewComplaint={() => setCurrentView("stage1")}
             onViewComplaint={(id) => {
+              // In a real app, this would navigate to complaint details
               console.log("View complaint:", id);
             }}
           />
@@ -133,12 +152,21 @@ function App() {
       <div className="max-w-md mx-auto bg-white shadow-2xl min-h-screen">
         {/* Header */}
         <div className="bg-gradient-to-r from-cyan-500 to-blue-600 text-white p-6 rounded-b-3xl shadow-lg">
-          <h1 className="text-2xl font-bold text-center mb-2">
-            CitizenConnect
-          </h1>
-          <p className="text-cyan-100 text-center text-sm">
-            Your Voice, Our Priority
-          </p>
+          <div className="flex justify-between items-center mb-2">
+            <div>
+              <h1 className="text-2xl font-bold">CitizenConnect</h1>
+              <p className="text-cyan-100 text-sm">Your Voice, Our Priority</p>
+            </div>
+            <div className="text-right">
+              <p className="text-sm text-cyan-100">Welcome, {user?.name}</p>
+              <button
+                onClick={handleLogout}
+                className="text-xs text-cyan-200 hover:text-white underline"
+              >
+                Logout
+              </button>
+            </div>
+          </div>
         </div>
 
         {/* Main Content */}
