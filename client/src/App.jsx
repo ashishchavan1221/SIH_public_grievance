@@ -154,7 +154,7 @@ function App() {
         <div className="bg-gradient-to-r from-cyan-500 to-blue-600 text-white p-6 rounded-b-3xl shadow-lg">
           <div className="flex justify-between items-center mb-2">
             <div>
-              <h1 className="text-2xl font-bold">CitizenConnect</h1>
+              <h1 className="text-2xl font-bold">NAGAR SETU</h1>
               <p className="text-cyan-100 text-sm">Your Voice, Our Priority</p>
             </div>
             <div className="text-right">
